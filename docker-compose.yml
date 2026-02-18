@@ -1,0 +1,60 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: ums_postgres
+    environment:
+      POSTGRES_DB: ums
+      POSTGRES_USER: ums
+      POSTGRES_PASSWORD: ums
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ums -d ums"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: ums_rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmq-diagnostics -q ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Optional Keycloak (dev only)
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.6
+    container_name: ums_keycloak
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    command: start-dev --http-port=8081
+    ports:
+      - "8081:8081"
+
+  ums:
+    build: .
+    container_name: ums_app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ums
+      SPRING_DATASOURCE_USERNAME: ums
+      SPRING_DATASOURCE_PASSWORD: ums
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SECURITY_ENABLED: "true"
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+volumes:
+  pgdata:
