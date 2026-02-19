@@ -77,9 +77,11 @@ public class UserService {
         u.setRoles(roles);
         u.setStatus(UserStatus.ACTIVE);
 
+        // Persistenza dell'utente e assegnazione dell'identificativo
         User saved = userRepository.save(u);
         log.info("Utente {} creato con successo", saved);
 
+        // Pubblicazione best-effort di un evento di dominio su RabbitMQ
         try {
             log.info("Pubblicazione evento userCreated per utente {}", saved.getId());
             amqpTemplate.convertAndSend(userExchange, userCreatedRoutingKey,
@@ -132,6 +134,7 @@ public class UserService {
     public void softDeleteUser(UUID id) {
         log.info("Cancellazione utente {}", id);
 
+        // Soft delete: l'utente non viene rimosso fisicamente dal database
         User u = getUser(id);
         u.setStatus(UserStatus.DELETED);
 

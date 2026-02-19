@@ -62,6 +62,7 @@ public class SecurityConfig {
         return converter;
     }
 
+    // Estrae i ruoli applicativi dal claim Keycloak "realm_access.roles"
     private Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
         Object ra = jwt.getClaims().get("realm_access");
         if (ra instanceof Map<?, ?> map) {

@@ -1,0 +1,35 @@
+{
+  "vhosts": [
+    { "name": "/" }
+  ],
+  "queues": [
+    {
+      "name": "ums.user.events.q",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "ums.user.events",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "ums.user.events",
+      "vhost": "/",
+      "destination": "ums.user.events.q",
+      "destination_type": "queue",
+      "routing_key": "user.created",
+      "arguments": {}
+    }
+  ]
+}

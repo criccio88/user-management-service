@@ -1,0 +1,76 @@
+{
+  "realm": "ums",
+  "enabled": true,
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "roles": {
+    "realm": [
+      { "name": "OWNER" },
+      { "name": "OPERATOR" },
+      { "name": "MAINTAINER" },
+      { "name": "DEVELOPER" },
+      { "name": "REPORTER" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "ums-api",
+      "protocol": "openid-connect",
+      "name": "ums-api",
+      "publicClient": true,
+      "bearerOnly": false,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "authorizationServicesEnabled": false,
+      "redirectUris": [
+        "http://localhost:8080/*"
+      ],
+      "webOrigins": [
+        "+"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "ums-owner",
+      "enabled": true,
+      "emailVerified": false,
+      "firstName": "Owner",
+      "lastName": "User",
+      "email": "owner@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Password1!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "OWNER",
+        "MAINTAINER"
+      ]
+    },
+    {
+      "username": "ums-reporter",
+      "enabled": true,
+      "emailVerified": false,
+      "firstName": "Reporter",
+      "lastName": "User",
+      "email": "reporter@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Password1!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "REPORTER"
+      ]
+    }
+  ]
+}

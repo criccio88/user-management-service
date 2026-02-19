@@ -6,7 +6,7 @@ COPY src ./src
 RUN mvn -q -DskipTests package
 
 FROM eclipse-temurin:21-jre
-ENV SPRING_PROFILES_ACTIVE=default
+ENV SPRING_PROFILES_ACTIVE=docker
 WORKDIR /app
 COPY --from=build /app/target/user-management-service-*.jar app.jar
 EXPOSE 8080

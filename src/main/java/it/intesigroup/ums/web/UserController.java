@@ -27,15 +27,16 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasAnyRole('OWNER','OPERATOR','MAINTAINER','DEVELOPER','REPORTER')")
     public Page<UserResponse> list(Pageable pageable) {
+        // Solo OWNER/MAINTAINER possono vedere i campi sensibili (es. codice fiscale completo)
         boolean canSeeSensitive = SecurityUtils.hasAnyRole("OWNER", "MAINTAINER");
         return userService.listUsers(pageable)
                 .map(u -> UserMapper.toResponse(u, !canSeeSensitive));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasAnyRole('OWNER','OPERATOR','MAINTAINER','DEVELOPER','REPORTER')")
     public UserResponse get(@PathVariable UUID id) {
         User u = userService.getUser(id);
         boolean canSeeSensitive = SecurityUtils.hasAnyRole("OWNER", "MAINTAINER");
@@ -43,28 +44,28 @@ public class UserController {
     }
 
     @PostMapping
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasAnyRole('OWNER','MAINTAINER')")
     public ResponseEntity<UserResponse> create(@RequestBody @Valid CreateUserRequest req) {
         User u = userService.createUser(req);
         return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.toResponse(u));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasAnyRole('OWNER','MAINTAINER')")
     public UserResponse update(@PathVariable UUID id, @RequestBody @Valid UpdateUserRequest req) {
         User u = userService.updateUser(id, req);
         return UserMapper.toResponse(u);
     }
 
     @PostMapping("/{id}/disable")
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasAnyRole('OWNER','MAINTAINER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void disable(@PathVariable UUID id) {
         userService.disableUser(id);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasAnyRole('OWNER','MAINTAINER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void softDelete(@PathVariable UUID id) {
         userService.softDeleteUser(id);
